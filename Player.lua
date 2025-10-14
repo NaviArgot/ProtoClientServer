@@ -14,7 +14,7 @@ local function draw (self)
     love.graphics.draw(self.sprite, self.x * 16, self.y * 16)
 end
 
-local function create (x, y)
+local function create (x, y, hue)
     local inst = {
         x = x,
         y = y,
