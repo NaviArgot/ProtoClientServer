@@ -8,6 +8,9 @@ local console = Console.create()
 local network
 
 function love.load (args)
+    print("")
+    print("-1 % 10 = ", -1 % 10)
+    print(" 9 % 10 = ",  9 % 10)
     if args[1] == "--server" then network = Server.create()
     else network = Client.create() end
     network:start()
