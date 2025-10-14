@@ -1,5 +1,5 @@
 -- Converts HSL to RGB. (input and output range: 0 - 1)
-function HSL(h, s, l, a)
+local function HSL(h, s, l, a)
 	if s<=0 then return l,l,l,a end
 	h, s, l = h*6, s, l
 	local c = (1-math.abs(2*l-1))*s

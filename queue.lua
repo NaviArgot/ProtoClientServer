@@ -26,5 +26,4 @@ local module = {
     new = new,
 }
 
-Queue = module
-return Queue
+return module

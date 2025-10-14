@@ -28,5 +28,4 @@ end
 local module = {
     create = create,
 }
-Console = module
-return Console
+return module
