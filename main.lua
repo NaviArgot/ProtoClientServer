@@ -1,5 +1,5 @@
-local Server = require("Server")
-local Client = require("Client")
+local Server = require("network.Server")
+local Client = require("network.Client")
 local GlobalQueue = require("GlobalQueue")
 local Console = require('Console')
 
