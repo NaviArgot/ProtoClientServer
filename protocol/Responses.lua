@@ -1,6 +1,8 @@
-local function newPlayer (id, x, y, hue)
+local responses = {}
+
+function responses.newPlayer (id, x, y, hue)
     return {
-        response = "NEWPLAYER",
+        responses = "NEWPLAYER",
         id = id,
         x = x,
         y = y,
@@ -8,7 +10,7 @@ local function newPlayer (id, x, y, hue)
     }
 end
 
-local function move (id, x, y)
+function responses.move (id, x, y)
     return {
         action = "MOVE",
         id = id,
@@ -16,3 +18,5 @@ local function move (id, x, y)
         y = y,
     }
 end
+
+return responses
