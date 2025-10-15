@@ -1,0 +1,1 @@
+- Añadir verificación de que si le corresponda el objeto jugador al cliente al mover o hacer otra operación sobre este.
