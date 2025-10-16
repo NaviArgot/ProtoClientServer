@@ -1,6 +1,6 @@
 local Server = require("network.Server")
 local Client = require("network.Client")
-local GlobalQueue = require("GlobalQueue")
+local GQ = require("GlobalQueues")
 local Console = require('Console')
 
 local isServer
@@ -21,11 +21,12 @@ end
 
 function love.update ()
     network:listen()
-    local val = GlobalQueue:pop()
+    local val = GQ.messageQueue:pop()
     while val do
         console:add(val)
-        val = GlobalQueue:pop()
+        val = GQ.messageQueue:pop()
     end
+    -- Exit love2d
     if love.keyboard.isDown("escape") then
         network:close()
         love.event.quit()

@@ -1,5 +1,6 @@
 local enet = require "enet"
-local GlobalQueue = require("GlobalQueue")
+local GQ = require "GlobalQueues"
+local json = require "json"
 
 local function start (self)
     self.host = enet.host_create()
@@ -11,15 +12,24 @@ local function listen (self)
     local event = self.host:service(100)
     while event do
         if event.type == "receive" then
-            GlobalQueue:push("From: <"..tostring(event.peer).."> Got message: "..tostring(event.data))
+            -- In the client side responses received from the server are queued to update the gamestate
+            GQ.messageQueue:push("From: <"..tostring(event.peer).."> Got message: "..tostring(event.data))
             event.peer:send( "ping" )
         elseif event.type == "connect" then
-            GlobalQueue:push("From: <"..tostring(event.peer).."> Got message: connected")
+            GQ.messageQueue:push("From: <"..tostring(event.peer).."> Got message: connected")
             event.peer:send( "ping" )
         elseif event.type == "disconnect" then
-            GlobalQueue:push("From: <"..tostring(event.peer).."> Got message: disconnected")
+            GQ.messageQueue:push("From: <"..tostring(event.peer).."> Got message: disconnected")
         end
         event = self.host:service()
+    end
+end
+
+local function emit (self)
+    -- In the client side actions are sent to the server to be evaluated
+    local data = GQ.actionsQueue:pop()
+    while data do
+       self.host:emit(json.encode(data))
     end
 end
 
