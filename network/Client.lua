@@ -12,9 +12,11 @@ local function listen (self)
     local event = self.host:service(100)
     while event do
         if event.type == "receive" then
+            local data = json.decode(tostring(event.data))
             -- In the client side responses received from the server are queued to update the gamestate
+            if data.action then GQ.responsesQueue:push(data) end
             GQ.messageQueue:push("From: <"..tostring(event.peer).."> Got message: "..tostring(event.data))
-            event.peer:send( "ping" )
+            --event.peer:send( "ping" )
         elseif event.type == "connect" then
             GQ.messageQueue:push("From: <"..tostring(event.peer).."> Got message: connected")
             event.peer:send( "ping" )
