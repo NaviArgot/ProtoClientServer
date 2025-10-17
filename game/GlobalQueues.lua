@@ -1,4 +1,4 @@
-local queue = require("queue")
+local queue = require("modules.queue")
 
 return {
     messageQueue = queue.new(),

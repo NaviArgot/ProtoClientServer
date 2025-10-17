@@ -2,7 +2,7 @@ local responses = {}
 
 function responses.newPlayer (id, x, y, hue)
     return {
-        responses = "NEWPLAYER",
+        response = "NEWPLAYER",
         id = id,
         x = x,
         y = y,
@@ -12,7 +12,7 @@ end
 
 function responses.move (id, x, y)
     return {
-        action = "MOVE",
+        response = "MOVE",
         id = id,
         x = x,
         y = y,

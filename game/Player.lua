@@ -1,4 +1,4 @@
-local HSL = require "HSL"
+local HSL = require "modules.HSL"
 
 local function update (self)
     local dx, dy = 0, 0

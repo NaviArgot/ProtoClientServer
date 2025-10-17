@@ -1,7 +1,7 @@
 local Server = require("network.Server")
 local Client = require("network.Client")
-local GQ = require("GlobalQueues")
-local Console = require('Console')
+local GQ = require("game.GlobalQueues")
+local Console = require('modules.Console')
 
 local isServer
 local isConsoleVisible = true

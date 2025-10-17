@@ -1,10 +1,10 @@
 local enet = require "enet"
-local GQ = require("GlobalQueues")
-local json = require "json"
+local GQ = require("game.GlobalQueues")
+local json = require "modules.json"
 
 local function start (self)
     self.host = enet.host_create("localhost:9789")
-    print("Server started")
+    GQ.messageQueue:push("Server started")
 end
 
 local function listen (self)
@@ -15,7 +15,6 @@ local function listen (self)
             -- In the server side Actions received from clients are queued to be executed
             if data.action then GQ.actionsQueue:push(data) end
             GQ.messageQueue:push("From: <"..tostring(event.peer).."> Got message: "..tostring(event.data))
-            --event.peer:send( "pong" )
         elseif event.type == "connect" then
             GQ.messageQueue:push("From: <"..tostring(event.peer).."> Got message: connected")
         elseif event.type == "disconnect" then
