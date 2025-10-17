@@ -35,12 +35,15 @@ local function close (self)
     self.host:flush()
 end
 
-local function create ()
+local function create (messageQueue, actionsQueue, responsesQueue)
     local inst = {}
     inst.start = start
     inst.listen = listen
     inst.emit = emit
     inst.close = close
+    inst.messageQueue = messageQueue
+    inst.actionsQueue = actionsQueue
+    inst.responsesQueue = responsesQueue
     return inst
 end
 
