@@ -1,32 +1,25 @@
+local updateMod = require "game.Update"
+local executeMod = require "game.Execute"
+
 local gamestate = {}
 
-local function newPlayer (self, hue)
-    self.playerCount = self.playerCount
-    local id = "player_"..self.playerCount
-    local x = love.math.random(20)
-    local y = love.math.random(20)
-    return id, x, y
+local function oblivion(self, ...)
+    local args = {...}
+    self.messageQueue:push("RECEIVED WRONG MESSAGE WITH: "..tostring(args))
 end
-
-local function move (self, id, dx, dy)
-    local player = self.players[id]
-    player.x = player.x + dx
-    player.y = player.x + dy
-    return id, player.x, player.y
-end
-
-local actionMap = {
-    NEWPLAYER = newPlayer,
-    MOVE = move,
-}
 
 local function execute (self, action)
-    local type = action.action
-    local args
-    for k, v in pairs(action) do
-        if k ~= "action" then args[k] = v end
-    end
-    return actionMap[type](self, args)
+    return (executeMod[action.type] or oblivion)(self, action);
+end
+
+local function update (self, response)
+    return (updateMod[response.type] or oblivion)(self, response);
+end
+
+local function minco (self)
+    print("-------- GAMESTATE ---------")
+    print("Player count: ", self.playerCount)
+    for k, v in pairs(self.players) do print(k, v) end
 end
 
 
@@ -35,7 +28,10 @@ function gamestate.create ()
         playerCount = 0,
         players = {},
         execute = execute,
+        update = update,
+        minco = minco
     }
+    return inst
 end
 
 return gamestate
