@@ -1,15 +1,15 @@
-local actions
+local actions = {}
 
-function actions.newPlayer (x, y, hue)
+function actions.newPlayer (hue)
     return {
-        action = "NEWPLAYER",
+        type = "NEWPLAYER",
         hue = hue,
     }
 end
 
 function actions.move (id, dx, dy)
     return {
-        action = "MOVE",
+        type = "MOVE",
         id = id,
         dx = dx,
         dy = dy,

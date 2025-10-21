@@ -6,13 +6,24 @@ local function start (self)
     self.messageQueue:push("Server started")
 end
 
+local function queueAction(self, data)
+    -- In the server side Actions received from clients are queued to be executed
+    if data.type == 'action' then self.actionsQueue:push(data) end
+end
+
+local function joinGame (event)
+    
+end
+
+local endpoints = {
+    "JOIN"
+}
+
 local function listen (self)
     local event = self.host:service(100)
     while event do
         if event.type == "receive" then
             local data = json.decode(tostring(event.data))
-            -- In the server side Actions received from clients are queued to be executed
-            if data.action then self.actionsQueue:push(data) end
             self.messageQueue:push("From: <"..tostring(event.peer).."> Got message: "..tostring(event.data))
         elseif event.type == "connect" then
             self.messageQueue:push("From: <"..tostring(event.peer).."> Got message: connected")
@@ -44,6 +55,7 @@ local function create (messageQueue, actionsQueue, responsesQueue)
     inst.messageQueue = messageQueue
     inst.actionsQueue = actionsQueue
     inst.responsesQueue = responsesQueue
+    inst.sessions = {} -- sessionId -> enet::peer
     return inst
 end
 
