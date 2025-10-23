@@ -1,7 +1,3 @@
-local Actions = require "protocol.Actions"
-local Responses = require "protocol.Responses"
-local gamestate = require "game.GameState"
-
 local function client_update(self)
     --- Received Responses to Actions from server
     local res = self.responsesQueue:pop()
@@ -17,16 +13,10 @@ local function server_update (self)
     --- Responses to send back
     local act = self.actionsQueue:pop()
     while act do
-        local res = self.gamestate:execute(act)
+        local res = self.gamestate:execute(act, self.serverQueue)
         self.responsesQueue:push(res)
         act = self.actionsQueue:pop()
     end
-end
-
-local function tempCreatePlayer (self, hue)
-    local act = Actions.newPlayer(hue)
-    local res = self.gamestate:execute(act)
-    return res.id
 end
 
 
@@ -38,7 +28,14 @@ local GameMaster = {}
 
     @param type string Either "server" or "client".
 ]]
-function GameMaster.create (type, messageQueue, actionsQueue, responsesQueue, gamestate)
+function GameMaster.create (
+    type,
+    messageQueue,
+    actionsQueue,
+    responsesQueue,
+    serverQueue,
+    gamestate
+)
     type = type or "client"
     local inst = {}
     inst.type = type
@@ -47,8 +44,8 @@ function GameMaster.create (type, messageQueue, actionsQueue, responsesQueue, ga
     inst.actionsQueue = actionsQueue
     inst.responsesQueue = responsesQueue
     inst.gamestate = gamestate
+    inst.serverQueue = serverQueue
     inst.update = type == "server" and server_update or client_update
-    inst.tempCreatePlayer = tempCreatePlayer
     return inst
 end
 

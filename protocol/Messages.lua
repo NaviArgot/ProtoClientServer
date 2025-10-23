@@ -1,45 +1,52 @@
 local messages = {}
+messages.client = {}
+messages.server = {}
 
-function messages.action(action)
+function messages.client.action(userId, action)
     return {
-        type = 'action',
+        type = 'ACTION',
+        userId = userId,
         data = action,
     }
 end
 
-
-function messages.response(response)
+function messages.client.join (name, hue)
     return {
-        type = 'response',
+        type = "JOIN",
+        name = name,
+        hue = hue,
+    }
+end
+
+function messages.client.getState ()
+    return {
+        type = "GETSTATE"
+    }
+end
+
+
+function messages.server.response (response)
+    return {
+        type = 'RESPONSE',
         data = response,
     }
 end
 
---[[
-    Client must send ths message to join a game.
-    
-    @param sessionId string|nil 
-    If the client needs to reconnect you should send the saved sessionId
-]]
-function messages.join(sessionId)
+
+
+function messages.server.joined (userId)
     return {
-        type = "JOIN",
-        sessionId = sessionId,
+        type = "JOINED",
+        userId = userId,
     }
 end
 
 
---[[
-    Server sends joined message to inform the client it has joined
-    a game. Also includes a sessionId which is used to uniquely 
-    identify the client.
-    @param sessionId string Uniquely identifies the client for the
-    current session
-]]
-function messages.joined(sessionId)
+
+function messages.server.state (state)
     return {
-        type = "JOINED",
-        sessionId = sessionId,
+        type = "STATE",
+        data = state,
     }
 end
 

@@ -1,18 +1,14 @@
 local actions = {}
 
-function actions.newPlayer (hue)
-    return {
-        type = "NEWPLAYER",
-        hue = hue,
-    }
-end
-
-function actions.move (id, dx, dy)
+--[[
+    Message that encodes the move command.
+    1 = Up, 2 = down, 3 = left, 4 = right
+    @param direction int
+]]
+function actions.move (direction)
     return {
         type = "MOVE",
-        id = id,
-        dx = dx,
-        dy = dy,
+        direction = direction
     }
 end
 

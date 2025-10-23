@@ -8,8 +8,8 @@ local function oblivion(self, ...)
     self.messageQueue:push("RECEIVED WRONG MESSAGE WITH: "..tostring(args))
 end
 
-local function execute (self, action)
-    return (executeMod[action.type] or oblivion)(self, action);
+local function execute (self, action, serverQueue)
+    return (executeMod[action.type] or oblivion)(self, action, serverQueue);
 end
 
 local function update (self, response)
@@ -23,13 +23,13 @@ local function minco (self)
 end
 
 
-function gamestate.create ()
+function gamestate.create (serverQueue)
     local inst = {
         playerCount = 0,
         players = {},
         execute = execute,
         update = update,
-        minco = minco
+        minco = minco,
     }
     return inst
 end

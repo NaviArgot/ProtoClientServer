@@ -11,7 +11,7 @@ local isServer
 local isConsoleVisible = true
 local console, input
 local network
-local messageQueue, actionsQueue, responsesQueue
+local messageQueue, actionsQueue, responsesQueue, serverQueue
 local gameMaster, gameState
 
 function love.load (args)
@@ -22,20 +22,25 @@ function love.load (args)
     gameState = GameState.create()
 
     if args[1] == "--server" then
+        love.window.setTitle("SERVER")
+        serverQueue = queue.new()
         network = Server.create(
             messageQueue,
             actionsQueue,
-            responsesQueue
+            responsesQueue,
+            serverQueue
         )
         gameMaster = GameMaster.create(
             "server",
             messageQueue,
             actionsQueue,
             responsesQueue,
+            serverQueue,
             gameState
         )
         isServer = true
-    else 
+    else
+        love.window.setTitle("CLIENT")
         network = Client.create(
             messageQueue,
             actionsQueue,
@@ -46,25 +51,26 @@ function love.load (args)
             messageQueue,
             actionsQueue,
             responsesQueue,
+            nil,
             gameState
         )
     end
     network:start()
-
-    local id = gameMaster:tempCreatePlayer(love.math.random(255))
-    input = Input.create(actionsQueue, id)
+    input = Input.create(actionsQueue)
 end
 
 function love.update ()
     network:listen()
-    input:receive()
+    if not isServer then input:receive() end
     --gameState:minco()
     gameMaster:update()
+    network:emit()
     local val = messageQueue:pop()
     while val do
         console:add(val)
         val = messageQueue:pop()
     end
+    if love.keyboard.isDown("f5") then network:start() end
     -- Exit love2d
     if love.keyboard.isDown("escape") then
         love.event.quit()
