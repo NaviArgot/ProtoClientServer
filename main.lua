@@ -8,11 +8,12 @@ local GameRender = require("game.GameRender")
 local Input = require("game.Input")
 
 local isServer
-local isConsoleVisible = true
-local console, input
+local showConsole = true
+local console, input, randomInput
 local network
 local messageQueue, actionsQueue, responsesQueue, serverQueue
 local gameMaster, gameState
+local fps = 0
 
 function love.load (args)
     messageQueue = queue.new()
@@ -59,9 +60,10 @@ function love.load (args)
     input = Input.create(actionsQueue)
 end
 
-function love.update ()
+function love.update (dt)
+    fps = 1/dt
     network:listen()
-    if not isServer then input:receive() end
+    if not isServer then input:receive(randomInput) end
     --gameState:minco()
     gameMaster:update()
     network:emit()
@@ -70,7 +72,9 @@ function love.update ()
         console:add(val)
         val = messageQueue:pop()
     end
+    if love.keyboard.isDown("r") then randomInput = not randomInput end
     if love.keyboard.isDown("f5") then network:start() end
+    if love.keyboard.isDown("t") then showConsole = not showConsole end
     -- Exit love2d
     if love.keyboard.isDown("escape") then
         love.event.quit()
@@ -79,7 +83,9 @@ end
 
 function love.draw ()
     GameRender.draw(gameState, network.playerId)
-    console:draw(15, 15, 15)
+    if showConsole then console:draw(15, 15, 15) end
+    love.graphics.setColor(1,1,1,1)
+    love.graphics.print("FPS: "..fps, 0, 0)
 end
 
 function love.quit ()
