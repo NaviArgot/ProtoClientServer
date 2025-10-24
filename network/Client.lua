@@ -28,6 +28,7 @@ end
 
 local function whenJoined (self, data)
     self.userId = data.userId
+    self.playerId = data.playerId
     self.server:send(
         json.encode(
             NetMsg.client.getState(self.userId)

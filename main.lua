@@ -78,7 +78,7 @@ function love.update ()
 end
 
 function love.draw ()
-    GameRender.draw(gameState)
+    GameRender.draw(gameState, network.playerId)
     console:draw(15, 15, 15)
 end
 
