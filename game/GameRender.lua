@@ -36,9 +36,9 @@ end
 function GameRender.draw (gamestate, playerId)
     local x, y = 0, 0
     local width, height = love.graphics.getDimensions()
-    if playerId then
-        x = gamestate[playerId].x
-        y = gamestate[playerId].y
+    if playerId and gamestate.players[playerId] then
+        x = gamestate.players[playerId].x
+        y = gamestate.players[playerId].y
     end
     squarePattern(x, y, 32)
     for id, player in pairs(gamestate.players) do

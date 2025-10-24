@@ -69,7 +69,7 @@ local function emit (self)
             )
             self.sessions.users[serverMsg.userId].peer:send(
                 json.encode(
-                    NetMsg.server.joined(serverMsg.userId)
+                    NetMsg.server.joined(serverMsg.userId, serverMsg.playerId)
                 )
             )
         elseif serverMsg.type == "STATE" then

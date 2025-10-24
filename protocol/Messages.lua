@@ -35,10 +35,11 @@ end
 
 
 
-function messages.server.joined (userId)
+function messages.server.joined (userId, playerId)
     return {
         type = "JOINED",
         userId = userId,
+        playerId = playerId,
     }
 end
 
