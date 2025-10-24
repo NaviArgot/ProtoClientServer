@@ -18,9 +18,10 @@ function messages.client.join (name, hue)
     }
 end
 
-function messages.client.getState ()
+function messages.client.getState (userId)
     return {
-        type = "GETSTATE"
+        type = "GETSTATE",
+        userId = userId,
     }
 end
 

@@ -26,8 +26,13 @@ local function loadState (self, state)
     self.gotState = true
 end
 
-local function whenJoined ()
-    
+local function whenJoined (self, data)
+    self.userId = data.userId
+    self.server:send(
+        json.encode(
+            NetMsg.client.getState(self.userId)
+        )
+    )
 end
 
 local function listen (self)
@@ -37,7 +42,7 @@ local function listen (self)
             local data = json.decode(tostring(event.data))
             -- In the client side responses received from the server are queued to update the gamestate
             if data.type == "RESPONSE" then queueResponses(self, data.data)
-            elseif data.type == "JOINED" then self.userId = data.userId
+            elseif data.type == "JOINED" then whenJoined(self, data)
             elseif data.type == "STATE" then loadState(self, data.data) end
             self.messageQueue:push("From: <"..tostring(event.peer).."> Got message: "..tostring(event.data))
         elseif event.type == "connect" then

@@ -33,6 +33,11 @@ local function queueAction (self, playerId, action)
     self.actionsQueue:push(msg)
 end
 
+local function queryState (self, userId)
+    local msg = GameMsg.execute.state(userId)
+    self.actionsQueue:push(msg)
+end
+
 local function listen (self)
     local event = self.host:service(100)
     while event do
@@ -43,7 +48,7 @@ local function listen (self)
                 local playerId = self.sessions.users[data.userId].playerId
                 queueAction(self, playerId, data.data)
             elseif data.type == "JOIN" then joinGame(self, data, event.peer)
-            elseif data.type == "STATE" then end
+            elseif data.type == "GETSTATE" then queryState(self, data.userId) end
         elseif event.type == "connect" then
             self.messageQueue:push("From: <"..tostring(event.peer).."> Got message: connected")
         elseif event.type == "disconnect" then

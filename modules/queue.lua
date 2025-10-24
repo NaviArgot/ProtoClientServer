@@ -1,4 +1,5 @@
 local function push (self, value)
+    if not value then return end
     self.array[self._r] = value
     self._r = self._r + 1
 end

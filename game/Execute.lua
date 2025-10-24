@@ -15,12 +15,12 @@ function execute.NEWPLAYER (gamestate, params, serverQueue)
     return msg.update.newPlayer(id, x, y, hue)
 end
 
-function execute.STATE (gamestate, params)
+function execute.STATE (gamestate, params, serverQueue)
     local state = {}
     for id, player in pairs(gamestate.players) do
-        state[#state + 1] = msg.update.newPlayer(player.id, player.x, player.y, player.hue)
+        state[#state + 1] = msg.update.newPlayer(id, player.x, player.y, player.hue)
     end
-    return msg.server.state(params.userId, state)
+    serverQueue:push(msg.server.state(params.userId, state))
 end
 
 function execute.MOVE (gamestate, params)
