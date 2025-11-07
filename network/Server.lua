@@ -4,8 +4,10 @@ local GameMsg = require "game.Messages"
 local NetMsg = require "protocol.Messages"
 local Sessions = require "network.Sessions"
 
+local channels = 15
+
 local function start (self)
-    self.host = enet.host_create("localhost:9789")
+    self.host = enet.host_create("localhost:9789", 256, channels + 1)
     self.messageQueue:push("Server started")
 end
 
@@ -39,13 +41,16 @@ local function queryState (self, userId)
 end
 
 local function listen (self)
-    local event = self.host:service(100)
+    --print("SENT: ", self.host:total_sent_data())
+    --print("RECEIVED: ", self.host:total_received_data())
+    local event = self.host:service()
     while event do
         if event.type == "receive" then
             self.messageQueue:push("From: <"..tostring(event.peer).."> Got message: "..tostring(event.data))
             local data = json.decode(tostring(event.data))
             if data.type == "ACTION" then
-                local playerId = self.sessions.users[data.userId].playerId
+                local user = self.sessions.users[data.userId]
+                local playerId = user and user.playerId or nil
                 queueAction(self, playerId, data.data)
             elseif data.type == "JOIN" then joinGame(self, data, event.peer)
             elseif data.type == "GETSTATE" then queryState(self, data.userId) end
@@ -83,10 +88,14 @@ local function emit (self)
     end
     -- In the server side Responses are broadcasted to clients
     local res = self.responsesQueue:pop()
+    local chan = 1
     while res do
         self.host:broadcast(
-            json.encode(NetMsg.server.response(res))
+            json.encode(NetMsg.server.response(res)),
+            chan,
+            "unreliable"
         )
+        chan = 1 + (chan + 1) % channels
         res = self.responsesQueue:pop()
     end
 end

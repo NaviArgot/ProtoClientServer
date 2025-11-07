@@ -10,7 +10,7 @@ local names = {
 
 local function start (self)
     self.host = enet.host_create()
-    self.server = self.host:connect("localhost:9789")
+    self.server = self.host:connect("localhost:9789", 16)
     self.messageQueue:push("Client started")
 end
 
@@ -37,7 +37,7 @@ local function whenJoined (self, data)
 end
 
 local function listen (self)
-    local event = self.host:service(100)
+    local event = self.host:service()
     while event do
         if event.type == "receive" then
             local data = json.decode(tostring(event.data))
